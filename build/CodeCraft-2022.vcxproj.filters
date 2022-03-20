@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="F:\ZYmaterial\HUAWEI\SDK\SDK_C++ - 副本\CodeCraft-2022\src\CodeCraft-2022.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="F:\ZYmaterial\HUAWEI\SDK\SDK_C++ - 副本\CodeCraft-2022\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{395850AA-82D1-33B3-A247-6BA585DC83C5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
