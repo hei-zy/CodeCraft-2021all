@@ -11,7 +11,7 @@ static constexpr char* DemandPath = "../data/demand.csv";
 static constexpr char* QosPath = "../data/qos.csv";
 static constexpr char* SiteBandwidthPath = "../data/site_bandwidth.csv";
 static constexpr char* OUTPATH = "../output/solution.txt";
-static constexpr float PERCENT = 0.95;
+static constexpr float PERCENT = 0.9501f;
 
 class FileReader {
 public:
@@ -125,7 +125,14 @@ private:
 					clientId[client] = clientCount++;
 					prev = pos + 1;
 				}
-				std::string client = line.substr(prev);
+				std::string client;
+				if ((pos = line.find('\r', prev)) != std::string::npos) {
+					client = line.substr(prev, pos - prev);
+				}
+				else {
+					client = line.substr(prev);
+				}
+				//std::string client = line.substr(prev,pos-prev);
 				clientName.emplace_back(client);
 				clientId[client] = clientCount++;
 				clientEdges.assign(clientCount, std::vector<int>());
@@ -249,7 +256,7 @@ public:
 	void allocate() {
 		int serverNum = (int)fileread->serverId.size();
 		int demandsNum = (int)fileread->allDemands.size();
-		maxPeak = (int)demandsNum * (1 - PERCENT);
+		maxPeak = (int)demandsNum * (1 - PERCENT) - 1;
 		peakNum.assign(serverNum, 0);
 		for (int i = 0; i < demandsNum; ++i) {
 			momentRet.assign(fileread->allDemands[i].size(), std::unordered_map<int, int>());
@@ -261,18 +268,17 @@ public:
 
 	void process(std::vector<int>& demand) {
 		int n = demand.size();
-		std::vector<int> visited(n, 0);
 		std::vector<int> bandRemain(fileread->serverSites.size(), 0);
 		for (int i = 0; i < bandRemain.size(); ++i) {
 			bandRemain[i] = fileread->serverSites[fileread->serverName[i]];
 		}
 		for (int i = 0; i < n; ++i) {
 			if (demand[i] == 0) continue;
-			satisfyClient(i, demand, visited, bandRemain);
+			satisfyClient(i, demand, bandRemain);
 		}
 	}
 
-	void satisfyClient(int i, std::vector<int>& demand, std::vector<int>& visited, std::vector<int>& bandRemain) {
+	void satisfyClient(int i, std::vector<int>& demand, std::vector<int>& bandRemain) {
 		int m = fileread->clientEdges[i].size();
 		for (int j = 0; j < m; ++j) {
 			if (demand[i] == 0) return;
@@ -337,7 +343,7 @@ public:
 		}
 	}
 
-	void mySort(std::vector<std::vector<int>>& Edges1, std::vector<std::vector<int>> Edges2, SortFlag flag= SortFlag::GREATER) {
+	void mySort(std::vector<std::vector<int>>& Edges1, std::vector<std::vector<int>>& Edges2, SortFlag flag= SortFlag::GREATER) {
 		if (flag == SortFlag::GREATER) {
 			for (auto& it : Edges1) {
 				std::sort(it.begin(), it.end(), [&Edges2](const int& a, const int& b) {
